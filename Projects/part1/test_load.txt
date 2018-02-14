@@ -1,0 +1,2 @@
+.separator | 
+.import Items.dat test_item

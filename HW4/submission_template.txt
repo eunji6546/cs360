@@ -1,0 +1,330 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 360, SPRING 2017
+        HOMEWORK #4 SUBMISSION TEMPLATE
+
+        Please copy and paste your answers (potentially Python code) into the appropriate spots below.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+            Eunji Heo 
+
+        </name>
+        <stuid>
+            <!-- Insert your student ID below. -->
+            20140633
+        </stuid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a.i">
+        <!-- Paste your solution to problem 1, part a.i below this line. --><![CDATA[
+
+        io_split_sort = 360
+        # IO Read : 160/(4-chunk)
+        # IO Write : 160 * 2 (write cost)
+
+        ]]><!-- End problem 1, part a.i. -->
+    </answer>
+    <answer number="1a.ii">
+        <!-- Paste your solution to problem 1, part a.ii below this line. --><![CDATA[
+
+merge_arity = 4
+# let x arity -> 4*x+1 buffers need and has 20 buffer pages 
+# max x is 4 
+
+        ]]><!-- End problem 1, part a.ii. -->
+    </answer>
+    <answer number="1a.iii">
+        <!-- Paste your solution to problem 1, part a.iii below this line. --><![CDATA[
+
+merge_passes = 2
+# math.ceiling(log(8,4(base)))
+
+
+        ]]><!-- End problem 1, part a.iii. -->
+    </answer>
+    <answer number="1a.iv">
+        <!-- Paste your solution to problem 1, part a.iv below this line. --><![CDATA[
+
+merge_pass_1 = 360
+# IO Read : 160/(4-chunk)
+# IO Write : 160 * 2 (write cost)
+
+        ]]><!-- End problem 1, part a.iv. -->
+    </answer>
+    <answer number="1a.v">
+        <!-- Paste your solution to problem 1, part a.v below this line. --><![CDATA[
+
+total_io = 1080 
+# IO cost of pass_1 = 360 
+# IO cost of pass_2 = 360 
+# io_split_sort = 360
+
+        ]]><!-- End problem 1, part a.v. -->
+    </answer>
+    <answer number="1b.i">
+        <!-- Paste your solution to problem 1, part b.i below this line. --><![CDATA[
+
+import math
+def cost_initial_runs(B, N, P):
+    # YOUR CODE HERE
+    # IO Read = N/P (N % P = 0 by assumption)
+    # IO Write = 2*N
+    return 2*N + N/P
+
+        ]]><!-- End problem 1, part b.i. -->
+    </answer>
+    <answer number="1b.ii">
+        <!-- Paste your solution to problem 1, part b.ii below this line. --><![CDATA[
+
+def cost_per_pass(B, N, P):
+    # YOUR CODE HERE
+    # IO Read = N/P (N % P = 0 by assumption)
+    # IO Write = 2*N
+    return 2*N + N/P
+
+        ]]><!-- End problem 1, part b.ii. -->
+    </answer>
+    <answer number="1b.iii">
+        <!-- Paste your solution to problem 1, part b.iii below this line. --><![CDATA[
+
+def num_passes(B, N, P):
+    # YOUR CODE HERE
+    # arity = floor of (B/P)
+    # num passes = log of (N/(B+1)) in base arity
+    return math.ceil( math.log((N/(B+1)), math.floor(B/P)))
+
+        ]]><!-- End problem 1, part b.iii. -->
+    </answer>
+    <answer number="1c">
+        <!-- Paste your solution to problem 1, part c below this line. --><![CDATA[
+
+B = 99
+N = 900
+temp = range(1, int(B/2))
+
+# let me show only feasible values of P 
+P_list = []
+for p in temp:
+    if (N%p==0):
+        P_list.append((p, external_merge_sort_cost(B, N, p)))
+#print(P_list)
+# Save the optimal value here
+P = min(P_list, key = lambda t: t[1])[0]
+print(P)
+# Save a list of tuples of (P, io_cost) here, for all feasible P's
+points = P_list
+
+        ]]><!-- End problem 1, part c. -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part a below this line. --><![CDATA[
+
+IO_Cost_HJ_1 = 3560
+# IO(join1) = P_R + P_S + P_RS = 10 + 100 + 50 
+# join1 : OUT = 160
+# IO(join2) = 3*(P_RS + P_T) + P_RST = 3*(50 + 1000) + 250 
+# join2 : OUT = 3400
+# Total = 160 + 3400 = 3560
+
+IO_Cost_HJ_2 = 4560
+# in the Same Process, IO_Cost_HJ_1 
+# IO(join1) = 3*(100 + 1000) + 500 
+# join1 : OUT = 3800
+# IO(join2) = 500 + 10 + 250 
+# join2 : OUT = 760
+# Total = 3800 + 760 = 4560
+
+IO_Cost_SMJ_1 = 8080
+# CASE join1,
+# Sort R : 1 pass(R/W) = 2^1 * 10 = 20
+# Sort S : 2 pass(R/W) = 2^2 * 100 = 400
+# Merging : 1 pass(R) = 10 + 100 = 110
+# Total IO Cost of join1 = 20 + 400 + 110 + 50 = 580
+# CASE join2, 
+# Sort RS : 2 pass(R/W) = 2^2 * 50 = 200
+# Sort T : 3 pass(R/W), (B * (B - 1) = 992 < 1000) -> 6 * 1000 = 6000
+# Merging : 1 pass(R) = 50 + 1000 = 1050
+# Total IO Cost of join2 = 200 + 6000 + 1050 + 250 = 7500
+# Total = 580 + 7500 = 8080
+
+IO_Cost_SMJ_2 = 10780
+# in the Same Process, IO_Cost_SMJ_1 
+# CASE join1,
+# Sort T : 3 pass(R/W) = 6000
+# Sort S : 2 pass(R/W) = 400
+# Merging : 1 pass(R) = 1000 + 100 = 1100
+# Total IO Cost of join1 =6000 + 400 + 1100 + 500 = 8000
+# CASE join2, 
+# Sort ST : 2 pass(R/W) = 2^2 * 500 = 2000
+# Sort R : 1 pass(R/W) = 20
+# Merging : 1 pass(R) = 500 + 10 = 510
+# Total IO Cost of join2 = 2000 + 20 + 510 + 250 = 2780
+# Total = 8000 + 2780 = 10780
+
+IO_Cost_BNLJ_1 = 2460
+# IO Cost = P(R) + (P(R)/(B-1))*P(S) + OUT
+# join1 = 10 + ceiling(10/31) * 100 + 50 = 160
+# join2 = 50 + ceiling(50/31) * 1000 + 250 = 2300
+# Total = 160 + 2300 = 2460
+
+
+IO_Cost_BNLJ_2 = 5360
+# join1 = 100 + ceiling(100/31) * 1000 + 500 = 4600
+# join2 = 10 + ceiling(10/31) * 500 + 250 = 760
+# Total = 4600 + 760 = 5360
+
+
+        ]]><!-- End problem 2, part a. -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part b below this line. --><![CDATA[
+
+P_R = 10
+P_S = 2000
+P_T = 50
+P_RS = 50
+P_RST = 25
+B = 16
+
+HJ_IO_Cost_join1 = 2060
+SMJ_IO_Cost_join2 = 525
+
+SMJ_IO_Cost_join1 = 14080
+HJ_IO_Cost_join2 = 325
+
+        ]]><!-- End problem 2, part b. -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a.i">
+        <!-- Paste your solution to problem 3, part a.i below this line. --><![CDATA[
+
+def lru_cost(N, M, B):
+    # YOUR CODE HERE
+    if ( N <= B+1 ):
+        # can read all in once 
+        return N
+    else :
+        return N*M
+
+
+        ]]><!-- End problem 3, part a.i. -->
+    </answer>
+    <answer number="3a.ii">
+        <!-- Paste your solution to problem 3, part a.ii below this line. --><![CDATA[
+
+
+def mru_cost(N, M, B):
+    # YOUR CODE HERE
+    if ( N <= B+1 ):
+        return N
+    else :
+        temp = range(B+1)
+        buffer = []
+        for i in range(B+1):
+            buffer.append(i);
+        #buffer = temp[:]
+        io_cost = B+1
+        position = B; 
+        mru = B;
+        passes = 0;
+        
+        while True:
+            position+=1
+            if ( position >= N):
+                # a round
+                position = 0; 
+                passes +=1
+            if ( passes >= M ):
+                break;
+                
+            if position in buffer:
+                mru = buffer.index(position)
+            else :
+                buffer[mru] = position
+                io_cost+=1;
+                
+            
+        return io_cost
+                
+                
+        ]]><!-- End problem 3, part a.ii. -->
+    </answer>
+    <answer number="3a.iii">
+        <!-- Paste your solution to problem 3, part a.iii below this line. --><![CDATA[
+
+B = 6
+N = 10
+M = 20
+
+# Provide a list of tuple (m, difference between LRU and MRU in terms of IO cost) here:
+p3_lru_points = [(m, abs(lru_cost (N,m,B)-mru_cost(N,m,B))) for m in range(1,M+1)]
+# print(p3_lru_points)
+
+
+        ]]><!-- End problem 3, part a.iii. -->
+    </answer>
+    <answer number="3b.i">
+        <!-- Paste your solution to problem 3, part b.i below this line. --><![CDATA[
+
+def clock_cost(N, M, B):
+    # YOUR CODE HERE
+    clk = [0]*(B+1)
+    buf = [None]*(B+1)
+    arm = 0
+    read = 0 
+    for m in range(M):
+        for n in range(N):
+                if n not in buf :
+                    if None in buf :
+                        # case : buffer is not full
+                        idx = buf.index(None)
+                        buf[idx] = n
+                        clk[idx] = 1
+                    else :
+                        # case : need to evict 
+                        while clk[arm] == 1:
+                            clk[arm] = 0
+                            arm = (arm+1)%len(buf)
+                        buf[arm] = n 
+                    read +=1
+                    clk[arm] = 0
+                    arm = (arm+1)%len(buf)
+                else :
+                    clk[idx] = 1 
+    #print(buf)
+#clock_cost(1,2,3)
+
+
+        ]]><!-- End problem 3, part b.i. -->
+    </answer>
+    <answer number="3b.ii">
+        <!-- Paste your solution to problem 3, part b.ii below this line. --><![CDATA[
+
+# EXPLANATION GOES HERE
+# CLOCK eviction policy is similar to LRU, so that it does not prevent the sequential flooding 
+
+        ]]><!-- End problem 3, part b.ii. -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+</pset>
+

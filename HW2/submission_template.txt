@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 360, SPRING 2017
+        HOMEWORK #2 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries (and potentially Python code
+        for the bonus question) into the appropriate spots below.
+
+        When submitting SQL queries, please do not include the intitial
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+
+	Eunji Heo
+        </name>
+        <student_number>
+            <!-- Insert your SUNet ID (NOT your student ID number!) below. -->
+
+	20140633
+
+        </student_number>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+
+    SELECT DISTINCT R1.A, R1.B, R1.C,R1.D,R1.E
+    FROM R as R1, R as R2
+    WHERE  (R1.A = R2.A and R1.B = R2.B and R1.C <> R2.C) or 
+    (R1.C = R2.C and R1.B <> R2.B or R1.A <> R2.A);
+
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+
+
+
+	SELECT DISTINCT R1.A, R1.B, R1.C, R1.D, R1.E
+	FROM R as 'R1', R as 'R2'
+	WHERE (R1.A=R2.A) and R1.B=R2.B and R1.C=R2.C and (R1.D<>R2.D or R1.E<>R2.E);
+
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <answer number="1c">
+        <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
+
+	SELECT DISTINCT S1.A, S1.B, S1.C
+	FROM S as S1, S as S2
+	WHERE (S1.A=S2.A and (S1.B<>S2.B or S1.C<>S2.C)) 
+    		or (S1.B=S2.B and ( S1.A<>S2.A or S1.C<>S2.C))
+
+        ]]><!-- End problem 1, part (c). -->
+    </answer>
+    <answer number="1d">
+        <!-- Paste your solution to problem 1, part (d) below this line. --><![CDATA[
+
+	SELECT DISTINCT R1.A, R1.B,R1.C,R1.D,R1.E
+	FROM R as 'R1', R as 'R2'
+	WHERE R1.A = R2.A  and 
+     		not exists (SELECT R3.A,R3.B,R3.C,R3.D,R3.E
+                 	FROM R as 'R3'
+                 	WHERE R1.A = R3.A and (R1.C=R3.C and R1.E=R3.E)
+                 		and (R2.A=R3.A and R2.B=R3.B and R2.D=R3.D));
+
+        ]]><!-- End problem 1, part (d). -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+
+	answer = True
+	explanation = "Superkey is subset of attributes and its closure is all attributes of relation. Key is minimal subset od Superkey. Therefore there can be multiple superkeys, so even if we add new functional dependancy, K is still a superkey."
+
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+
+	answer= False
+	K= set("X","Z","Y")
+	FDs =[ ]
+	new_FD = ( (set("X"), set(("Y","Z")))
+
+        ]]><!-- End problem 2, part (b). -->
+    </answer>
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+
+	answer= False
+	K= set("X1","X2","X3")
+	FDs =[(set("X1"), set(("X4","X5",...,"Xm"))) ]
+	new_FD = ( (set("X2"), set("X3")))
+
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a">
+        <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
+
+	DROP TABLE IF EXISTS T; 
+	CREATE TABLE T(A int, B int, C int, D int);
+	
+	INSERT into T values (0,0,1,2);
+	INSERT into T values (1,0,2,3);
+	INSERT into T values (0,1,3,4);
+	INSERT into T values (1,1,4,5);
+
+        ]]><!-- End problem 3, part (a). -->
+    </answer>
+    <answer number="3b">
+        <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
+
+	DROP TABLE IF EXISTS T; 
+	CREATE TABLE T(A int, B int, C int, D int);
+	INSERT into R values (0,0,0,0);
+
+        ]]><!-- End problem 3, part (b). -->
+    </answer>
+    <answer number="3c">
+        <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
+
+	DROP TABLE IF EXISTS T; 
+	CREATE TABLE T(A int, B int, C int, D int);
+	-- can not
+
+        ]]><!-- End problem 3, part (c). -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+
+    <!-- BEGIN PROBLEM 4 -->
+    <answer number="4a">
+        <!-- Paste your solution to problem 4, part (a) below this line. --><![CDATA[
+
+	DROP TABLE IF EXISTS R; 
+	CREATE TABLE R(A int, B int, C int, D int);
+	INSERT into R values (0,0,0,0);
+	INSERT into R values (1,0,1,1);
+	INSERT into R values (1,0,0,0);
+	INSERT into R values (0,0,1,1);
+	INSERT into R values (2,2,2,3);
+	INSERT into R values (2,2,2,4);
+	INSERT into R values (3,2,2,4);
+	INSERT into R values (4,3,2,4);
+
+
+        ]]><!-- End problem 4, part (a). -->
+    </answer>
+    <answer number="4b">
+        <!-- Paste your solution to problem 4, part (b) below this line. --><![CDATA[
+
+	DROP TABLE IF EXISTS S;
+	CREATE TABLE S (A int, B int, C int, D int, E int);
+	INSERT INTO S SELECT *,0 FROM R;
+	INSERT INTO S SELECT *,1 FROM R;
+
+        ]]><!-- End problem 4, part (b). -->
+    </answer>
+    <!-- END PROBLEM 4 -->
+
+
+</pset>

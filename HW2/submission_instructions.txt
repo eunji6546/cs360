@@ -1,0 +1,17 @@
+Submission Instructions for Homework #2
+
+Although Jupyter Notebooks are a very useful tool for interactively playing with SQL queries, it turns out that they make autograding a pain. As a workaround, we’ve created an autograder-friendly submission template file for submitting your work.
+ 
+First, please download the HW#2 submission template from KLMS.
+
+Please save the template with the filename submission_template.txt.
+
+The template contains a lot of skeleton XML code, but you don’t need to worry about how it works. Please fill out the fields marked with comments in the template. For each question, copy and paste your final answer into the appropriate location in the template.
+
+Importantly, for SQL queries please omit the leading %sql and %%sql IPython commands!
+
+Please let us know if you're stuck or confused about where to copy your answers.
+
+Once you’ve copied all of your code into the submission template, you’re ready to submit your code to KLMS!
+
+If you have any questions or encounter any issues with the submission process, please let us know!

@@ -1,0 +1,58 @@
+{% extends "app_base.html" %}
+{% block content %}
+
+<h3> Filtered Bid List </h3> 
+{% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+  {% endif %}
+<br/><center>Please select category:</center>
+
+
+<form method="POST" action="bidlist">
+    <p align="center">Item ID:<input type="text" name="itemID" value=""></p>
+<p align="center">Category:<input type="text" name="category" ></p>
+<p align="center">Price range: From<input type="text" name="from" value=""> ~ To <input type="text" name="to" value=""> </p>
+<p align="center">Description:<input type="text" name="description" ></p>
+<p align="center">Status:<input type="radio" name="status" value = "both" checked =True> Both 
+    <input type="radio" name="status" value = "open"> Open 
+    <input type="radio" name="status" value = "closed"> Closed
+    </p>
+<p align="center"><input type="submit" value="Filter"></p>
+    
+</form>
+
+<body>
+    {% set count = 1 %}
+    {% for item in itemList %}
+    <form method="Post" action="submitBid" > 
+        
+ <b>ItemID</b> : {{item.ItemID}}<br>
+     <b>Available From</b> {{item.Started}} - <b>To</b> {{item.Ends}} <b>Status : </b>
+        {% if statusList[loop.index0] %} OPEN {% else %} CLOSED {% endif %} <br> 
+        <b>Buy_Price</b> : {{item.Buy_Price}} | <b>Current Highest Bid</b> : {{item.Currently}} <br> 
+        <b>Category</b> : {{item.category}} <br> <b>Description</b> : {{item.description}} 
+        
+        {% if biddingList[loop.index0] %}
+        {% set bidding = biddingList[loop.index0] %}
+        
+            {% for bid in bidding %}
+        <br>
+         <b>Bidder</b> {{bid.BidderID}} bidded <b>${{bid.Amount}}</b> at {{bid.Time}}  <br>
+            {% endfor %}
+        {% endif %}
+        <br>
+        {% if winnerList[loop.index0] %}
+        <b> Winner is </b> {{winnerList[loop.index0].BidderID}} With $ {{winnerList[loop.index0].Amount}} At {{winnerList[loop.index0].Time}}
+        <br>
+        {% endif %}
+        {% if statusList[loop.index0] %}
+        <input type="hidden" name ="itemID" value =" {{item.ItemID}}">
+        Your ID : <input type= "text" name ="userID"> <br>
+        Bidding Amount : <input type="text" name ="amount"> <br>
+        <input type="submit" value = "Bid to this Item"> <br>
+        {% endif %}
+        </form>
+        -------------------------------------------
+    {% endfor %}
+</body>
+{% endblock %}

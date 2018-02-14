@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 360, SPRING 2017
+        PROBLEM SET 1 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries (and potentially Python code
+        for the bonus question) into the appropriate spots below. 
+
+        When submitting SQL queries, please do not include the intitial 
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+            EUNJI HEO
+        </name>
+        <stuid>
+            <!-- Insert your student ID number -->
+		20140633
+        </stuid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+
+		%%sql 
+		SELECT A.i as 'i' ,A.j as 'j',(A.val*B.val) AS 'val' 
+		FROM A ,B 
+		WHERE A.i=B.i and A.j=B.j 
+		ORDER BY i,j;
+
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+
+		%%sql 
+
+		SELECT (C.pi) as 'i', A.j as 'j', A.val as 'val'
+		FROM A, C 
+		WHERE A.i = C.ind
+		ORDER BY C.pi, A.j;
+
+
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <answer number="1c">
+        <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
+
+
+		%%sql 
+
+		SELECT (C.pi) as 'i', Pi.j as 'j', Pi.val as 'val'
+		FROM (SELECT (C.pi) as 'i', A.j as 'j', A.val as 'val'
+    			FROM A, C 
+    			WHERE A.i = C.ind
+    			ORDER BY C.pi, A.j) as Pi, C
+		WHERE Pi.i = C.ind
+		ORDER BY C.pi, Pi.j;
+
+
+        ]]><!-- End problem 1, part (c). -->
+    </answer>
+    <answer number="1d">
+        <!-- Paste your solution to problem 1, part (d) below this line. --><![CDATA[
+
+		%%sql 
+		SELECT M1.i as 'i', M1.j as 'j', MAX(M2.val) as 'val' 
+		FROM A as M1, A as M2
+		WHERE (abs(M1.i - M2.i)= 1 and M1.j = M2.j) or ( M1.i=M2.i and abs(M1.j-M2.j)=1) or (M1.i=M2.i and M1.j=M2.j)
+		GROUP BY M1.i, M1.j ;
+
+
+        ]]><!-- End problem 1, part (d). -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+
+		%%sql 
+
+		SELECT region, COUNT(max_val) as "num_state_winners" 
+		FROM(
+			SELECT energy.region as "region", MAX(solar) as "max_val" FROM energy  union
+			SELECT energy.region as "region", MAX(wind) as "max_val" FROM energy union
+			SELECT energy.region as "region", MAX(hydro) as "max_val" FROM energy union
+			SELECT energy.region as "region", MAX(nuclear) as "max_val" FROM energy 
+		)
+		GROUP BY region
+		ORDER BY num_state_winners desc;
+
+
+
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+
+
+		%%sql
+		SELECT state, solar, wind
+		FROM
+		(
+		    SELECT *  FROM (SELECT MAX(energy.wind) as m FROM energy) as wind_max, energy WHERE energy.wind = wind_max.m
+		    Union
+		    SELECT * FROM (SELECT MAX(energy.solar) as m FROM energy) as solar_max, energy WHERE energy.solar = solar_max.m
+		) 
+		ORDER BY solar+wind desc;
+
+
+        ]]><!-- End problem 2, part (b). -->
+    </answer>
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
+
+
+		%%sql 
+
+		SELECT region 
+		FROM(
+    		SELECT region, min(e.nuclear) as ‘min’ ,max(e.nuclear) as ‘max’
+		    from (SELECT * FROM energy where nuclear>0) as e
+		    group by region
+ 		   ) as mm, 
+		    (SELECT max(temp.max) as 'max_val' 
+ 		    from (SELECT region, min(e.nuclear) as ‘min’ ,max(e.nuclear) as ‘max’
+ 		   from (
+ 		       SELECT * FROM energy where nuclear>0
+ 		   ) as e
+   		 group by region) as temp ) as max_table
+		WHERE mm.min> max_table.max_val*0.1;
+
+
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <answer number="2d">
+        <!-- Paste your solution to problem 2, part (d) below this line. --><![CDATA[
+
+		%%sql
+
+		SELECT region 
+		FROM 
+		(
+		SELECT DISTINCT t1.nuclear as 'max_val'
+		FROM energy t1
+		  LEFT JOIN energy t2
+		    ON t2.nuclear > t1.nuclear AND t2.nuclear IS NOT NULL and not t2.nuclear = 0
+		WHERE t2.nuclear IS NULL
+		-- max value table 
+		) as 'maxT',
+		
+		(
+		SELECT DISTINCT t1.region, t1.nuclear as 'min_val'
+		FROM (select * from energy where nuclear >0 )  t1
+		  LEFT JOIN (select * from energy where nuclear >0 ) t2
+ 		   ON t1.region = t2.region and t2.nuclear < t1.nuclear AND t2.nuclear IS NOT NULL 
+		WHERE t2.nuclear IS NULL
+		) as 'minT'
+		WHERE minT.min_val > 0.1 * maxT.max_val;
+
+
+
+        ]]><!-- End problem 2, part (d). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a">
+        <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
+
+		%%sql
+
+		SELECT i, ROUND(SUM(val),9) as 'val'
+		FROM (
+		SELECT i, (X.val*Model.val) as 'val'
+		FROM X, Model
+		WHERE X.j = Model.j 
+		) as Xw
+		GROUP BY Xw.i
+		LIMIT 5;
+
+		
+        ]]><!-- End problem 3, part (a). -->
+    </answer>
+    <answer number="3b">
+        <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
+
+		%%sql
+		DROP VIEW IF EXISTS PREDICTION;
+		CREATE VIEW PREDICTION AS
+		SELECT i, COUNT(val)-1 as 'val'
+		FROM 
+		(SELECT i, SUM(val) as 'val'
+		FROM (
+		SELECT i, (X.val*Model.val) as 'val'
+		FROM X, Model
+		WHERE X.j = Model.j 
+		) as Xw
+		GROUP BY Xw.i
+		UNION ALL
+		SELECT *
+		FROM (SELECT i, SUM(val) as 'val'
+		        FROM (
+  		          SELECT i, (X.val*Model.val) as 'val'
+  		          FROM X, Model
+ 		           WHERE X.j = Model.j 
+ 		       ) as Xw
+ 		   GROUP BY Xw.i) as temp 
+		 WHERE temp.val>0
+		)
+		GROUP BY i;
+
+
+        ]]><!-- End problem 3, part (b). -->
+    </answer>
+    <answer number="3c">
+        <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
+
+		%%sql
+
+		SELECT CAST(c1 AS float)/ CAST(c2 AS float) as 'accuracy'
+		FROM
+		(
+		SELECT 
+		    (SELECT COUNT(*)
+		FROM
+		(SELECT correct.i as 'i'
+		FROM PREDICTION as correct,IRIS r
+		WHERE correct.i = r.i and correct.val = r.Label
+		) as removed) as C1,
+		(SELECT COUNT(*) from IRIS) as C2
+		) ;
+
+        ]]><!-- End problem 3, part (c). -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+
+    <!-- BEGIN BONUS -->
+    <answer number="bonus1">
+        <!-- Paste your solution to bonus problem 1 below this line. --><![CDATA[
+
+		%%sql
+		SELECT ttemp.j, ROUND(Model.val + 0.0001*ttemp.mult_sum,9) as 'val' 
+		FROM
+		(
+		SELECT j, SUM(temp.sum) as 'mult_sum'
+		FROM
+		(
+		SELECT correct.i as 'i', X.j as 'j', X.val*(r.Label-correct.val) as "sum"
+		FROM PREDICTION as correct,IRIS r, X
+		WHERE correct.i = r.i and correct.i = X.i
+		) as temp
+		GROUP BY j
+		) as ttemp, Model
+		WHERE Model.j=ttemp.j;
+
+
+        ]]><!-- End bonus problem 1. -->
+    </answer>
+    <!-- END BONUS -->
+
+</pset>
